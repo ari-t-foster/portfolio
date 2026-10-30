@@ -1,0 +1,116 @@
+---
+title: "Android Weather App: Places, Observations, and Contextual Insights"
+description: "My contributions to a team app, from place-data joins and nearby search to weather parsing and LLM integration."
+publishDate: 2026-10-30
+tags:
+  - "Case Study"
+  - "Team Engineering"
+  - "Geospatial Data"
+draft: false
+order: 4
+---
+
+# Android Weather App: Places, Observations, and Contextual Insights
+
+*Team project · Android/Java · weather data engineering · Gemini integration*
+
+## At a glance
+
+Our team built an Android weather app that lets a user save cities, view current station observations, explore a map and nearby places, choose a visual theme, and ask for contextual weather insights. The app's visual design and most of its user-facing screens were collaborative work, with a teammate leading the polished frontend and UX. My main responsibilities were build and Git support, settings integration, the place-data and spatial-analysis tools, and a Gemini integration that progressed from a Python prototype to schema-constrained Android requests and responses. I also contributed to the parsing that turns station reports into the app's weather display.
+
+The engineering problem was getting these pieces to agree on *place*. A person chooses a city by name; the app needs coordinates for the map and nearby search, and a station identifier for an observation. The interface hides that join, but the experience depends on it.
+
+## Problem and product
+
+The app presents a simple path: sign in, add a city, open its details, and view the weather. From there a user can open a map, read four suggested questions and answers about the conditions, or look for nearby alternatives if the selected station has no useful data. The account's saved city list and visual theme persist through Android's `AccountManager`. Three implemented themes—light, dark, and golden hour—carry across screens.
+
+The chooser needed searchable names; weather retrieval needed ICAO/METAR station codes; the map needed coordinates; the fallback needed a spatial neighborhood. No single ready-made list offered all four with reliable coverage. We relied on the substantial place aggregation in `weather-util`, then transformed its records into Android resources. The resulting design is a data pipeline as much as a mobile interface.
+
+## My role on the team
+
+The project involved roughly three other substantial coding contributors and a teammate who drove the frontend and UX. I supported the shared Git/build workflow and worked on the settings feature's integration so the selected theme applied across the activities. I wrote the `ripPlaces` and `findLargestNNDistance` tools and an exploratory `geminiInteraction` program, then updated the Android insights integration to use a structured JSON response contract. I suggested a bisect-based way to accelerate a sorted search; that recommendation was taken up by the team. I also worked on parsing the weather observations used by the app. These were contributions to a team result, rather than sole ownership of the whole Android product or its visual design.
+
+The Python programs live under `tools/`; Java activities implement the saved-city, weather, map, nearby-city, settings, and insights flows. The shared Gradle framework and full assets were left out of this compact archive, so this writeup does not claim a fresh build from it alone.
+
+## From geographic records to app resources
+
+`ripPlaces.py` reads `weather-util`'s compressed `places.gz` records. It extracts each place's description, centroid, station, and zone, then writes a sorted `parsedPlaces.json` and a smaller `parsedPlacesNames.json`. It also writes a gzip-compressed version of the detailed output. The centroid is retained in radians; `MapActivity` converts it to degrees before placing a marker. The name-only resource serves the city search, while the detailed resource serves weather station lookup and location features.
+
+`CitiesFinderActivity` loads the name list into a `RecyclerView` and filters it as the user types. `WeatherActivity` and `MapActivity` use the detailed mapping for station and coordinates. The pipeline gives the screens consistent names without separate hand-edited lists.
+
+The upstream dataset had already done much of the difficult cross-referencing. My tool made predictable app resources and preserved the join between names, coordinates, and stations. It deduplicates by description, which may collapse distinct places sharing a name.
+
+## Diagnosing the nearby-place search
+
+The nearby-city feature searches by comparing a selected city's radian latitude and longitude with the coordinates of other places. In the supplied Android code, it starts with a rectangular tolerance of `0.005` on each coordinate, scans the place list, and widens the tolerance by a factor of ten until it finds at least five entries or reaches the loop's limit. A fixed, too-small window can leave the list nearly empty in sparse regions. A window that grows aggressively can return places that are not especially close. The search granularity was therefore a product bug, not merely a performance question.
+
+I wrote `findLargestNNDistance/main.py` to examine the spacing of the actual place centroids. It builds a SciPy `cKDTree`, asks for each point's two nearest entries (including the point itself), and reports the largest nearest-neighbor distance and the corresponding pair of places. It can also write ten-neighbor indices as signed 32-bit integers for experimentation. The useful result was empirical: the team could inspect the worst local gap in its own dataset and choose or test a search tolerance with evidence. The tree is an **offline diagnostic tool** in the supplied snapshot; the Android nearby-city activity still uses repeated scans and expanding windows. Calling the runtime feature a KD-tree search would misstate the implementation.
+
+There is a geographic subtlety as well. The diagnostic tree uses Euclidean distance on radian latitude/longitude pairs. That is good for finding suspicious gaps and iterating on this dataset, but it is not an exact great-circle distance: longitude changes scale with latitude, and the antimeridian wraps. A production nearest-place ranking would need a spherical distance calculation or suitable coordinates, plus explicit rules for duplicate points and places sharing a station. My bisect suggestion targeted the separate opportunity to narrow a search on sorted data; it should not be confused with the spatial diagnostic.
+
+## From a station code to weather on screen
+
+Once a city is selected, `WeatherActivity` resolves its station and fetches a decoded observation from NOAA's TGFTP path, `/data/observations/metar/decoded/<station>.TXT`. The parser looks for fields such as temperature, humidity, wind, sky conditions, and weather description. It displays whatever is available and packages the same fields into `lastWeatherJSON` for the insights screen. If temperature, humidity, and wind are all unavailable, the ordinary weather fields give way to a message and a button leading to nearby cities.
+
+That fallback is important because having a station identifier does not guarantee a current, complete report. It also exposes a limitation: the current code labels the time using `Instant.now()`, which is fetch time rather than the METAR observation time. A reader should not interpret the displayed timestamp as a verified station measurement timestamp. The reviewed Android snapshot has network and parsing work on the UI thread, and an I/O failure can leave the time string empty before it is split. These remain reliability limitations, even though complete workflows now run in the emulator.
+
+## From prototype to structured weather insights
+
+My `geminiInteraction` Python prototype tested whether a model could generate useful, context-specific questions from contrasting weather observations: a clear evening, heavy rain with lightning, and a windy cloudy day. The earlier Android implementation subsequently used a different, fragile contract: prompt text embedded in a manually concatenated JSON request, with four questions and four answers separated by `#`. The UI presented the four questions as buttons and showed an answer when selected, but parsing assumed exactly eight positional fields.
+
+In October 2026, I updated the Android integration to use Gemini's Interactions endpoint and a schema-constrained JSON response. The Android client now constructs the request with `JSONObject` and `JSONArray` rather than manual quote escaping. The request includes the saved observation as a JSON-encoded input string, a separate system instruction, `thinking_level: low`, and a schema requiring exactly four objects with `question` and `answer` string fields. A separate Python test script was used to exercise the same request and response shape before integrating it in the app.
+
+The REST response contains heterogeneous `steps` entries, including thought metadata and a `model_output` entry. The revised parser searches by step and content type rather than array position or JSON key order, decodes the returned text as JSON, checks that `quadrant` contains four entries, and binds the four questions and answers to the existing UI. This replaced the delimiter split with an explicit, inspectable data contract; it is not a claim of comprehensive error handling or formal schema validation on Android.
+
+A sanitized successful response illustrates the user-visible contract:
+
+```json
+{
+  "quadrant": [
+    {
+      "question": "What should I wear outside?",
+      "answer": "Wear a light jacket or sweater to stay comfortable in the 57°F cool air."
+    },
+    {
+      "question": "Is it raining right now?",
+      "answer": "No, conditions are clear with no precipitation reported."
+    },
+    {
+      "question": "How strong is the wind?",
+      "answer": "The wind is currently calm."
+    },
+    {
+      "question": "Are the skies clear for stargazing?",
+      "answer": "Yes, the sky conditions are completely clear."
+    }
+  ]
+}
+```
+
+The corresponding San Luis Obispo request reported 200 input tokens, 155 output tokens, and zero thinking tokens. This is one observed run, not a latency or cost benchmark.
+
+Emulator integration also exposed practical host-network issues: IPv6 addresses were resolved without usable IPv6 connectivity, so the Gemini-specific OkHttp client filters DNS results to IPv4 while preserving hostname-based HTTPS. Correcting malformed HTTP header names resolved an HTTP/2 reset encountered during debugging. The feature now works end to end in recorded demonstrations, although external API 503 errors and slow responses can still occur; requests and failures are not fully isolated from the activity lifecycle. These trade-offs limit reliability, not the validity of the demonstrated workflow.
+
+Insights are an aid to interpretation, not a forecast or authoritative warning. A decoded station report describes conditions at a station and may be stale or incomplete for the selected city. Generated advice can also assert something not supported by the input, such as a future rain duration or UV index. The most credible presentation keeps the observation visible, identifies the report time and station, and treats generated text as contextual commentary.
+
+## Verification, outcome, and next step
+
+The earlier repository snapshot includes Android instrumentation tests for themes, login, city management, map interaction, weather views, and insights. The old insights tests target the retired eight-part `#`-delimited response and should not be presented as validation of the new JSON-based integration. I have not rerun the test suite against the compact archive. Separately, seven recordings show completed app workflows in the local emulator; the portfolio demo will select one to three representative clips.
+
+The result is a functioning team-built Android weather application with a strong visual interface and a data path from place selection to station observations, maps, nearby alternatives, and contextual questions. My principal contributions were preparing place resources, measuring spatial coverage, integrating settings, supporting the shared build workflow, and taking the Gemini feature from prototype to a working structured integration. For the portfolio, a short recorded walkthrough is more practical than distributing a live app: it avoids API-key handling, emulator requirements, and external-service reliability dependencies, while preserving credit for the teammates responsible for much of the frontend and UX.
+
+## Related Resources
+
+<div class="my-cta-buttons">
+  <a href="/projects/android-weather-app" class="btn-primary">
+    Read Project Case Study
+  </a>
+  <a
+    href="https://github.com/ari-t-foster/projects/android-weather-app"
+    class="btn-secondary"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    GitHub Repository
+  </a>
+</div>

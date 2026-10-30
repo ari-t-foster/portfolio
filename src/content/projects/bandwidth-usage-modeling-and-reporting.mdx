@@ -1,0 +1,89 @@
+---
+title: "Bandwidth Usage Modeling and Reporting"
+role: "Statistical Modeling and Systems Engineering"
+year: 2026
+duration: "Historical analysis and live reporting"
+outcomeSummary: "Packaged a system that scores homelab traffic against a residential usage model and produces dated JSON and one-page reports."
+overview: "Published OpenVault usage summaries provide the statistical reference; pfSense/vnStat provides live measurements. A frozen scorer estimates monthly exceedance and model-relative incidence for total, download, and upload traffic."
+problem: "Multi-terabyte repository mirrors and planned cloud-backup uploads raised a practical question: how unusual was this usage? Aggregated, right-skewed source data could not support a raw Gaussian z-score or universal ISP limit."
+constraints:
+  - "Fit aggregate reports without household-level observations or a known outlier population"
+  - "Expose uncertainty in extreme and directional estimates"
+  - "Score vnStat exports without implying an ISP enforcement threshold"
+  - "Keep model regeneration separate from routine reporting"
+approach: "Extracted summaries from nine reports spanning 1Q24–1Q26, tested lognormal and Weibull fits, then selected a segmented gamma model with a Pareto tail. Frozen parameters score vnStat counters; restricted SFTP and systemd automation deliver scored JSON and printable PostScript."
+keyDecisions:
+  - decision: "Report exceedance probability and model-relative incidence instead of raw sigma"
+    reasoning: "The source lacks a suitable observed standard deviation. A survival curve answers how common a measured volume is under the fitted model."
+    alternatives:
+      - "Use mean and standard deviation as a Gaussian score"
+      - "Set green, yellow, and red bands from anecdotal ISP thresholds"
+  - decision: "Use a segmented gamma model with a Pareto tail"
+    reasoning: "The lognormal missed low-usage buckets; Weibull improved the fit, while the selected gamma/gamma structure matched buckets more closely. The 5,000 GB tail remains extrapolative."
+    alternatives:
+      - "Single lognormal fit"
+      - "Single Weibull fit"
+  - decision: "Freeze evaluated parameters and separate the reporter from receiver automation"
+    reasoning: "RPM builds reuse evaluated weights, while separate service identities limit the upload account's access."
+    alternatives:
+      - "Refit the model during every report run"
+      - "Run upload reception and reporting under one account"
+techStack:
+  - "Python"
+  - "SciPy"
+  - "Jupyter"
+  - "pfSense/vnStat"
+  - "systemd"
+  - "RPM"
+  - "PostScript"
+impact:
+  metrics:
+    - label: "Model configurations"
+      value: "504"
+    - label: "Period-level fits"
+      value: "1,008"
+    - label: "Recorded grid runtime"
+      value: "~153 s"
+  qualitative: "Dated JSON and one-page reports compare measured homelab traffic with a consistent reference curve."
+learnings:
+  - "Matching the mean by construction is not validation; bucket shares exposed the lognormal failure"
+  - "Low bucket error does not make far-tail or directional projections precise"
+  - "Freezing parameters keeps model changes deliberate and reviewable"
+featured: true
+order: 2
+---
+
+## What the Numbers Mean
+
+The scorer estimates the fraction of households in its **modeled reference distribution** that would use at least a measured monthly volume. “1 in N” is its reciprocal, not an observed subscriber count or ISP warning. Directional tails have less validation. The 1Q27 reference is a projection, and rare estimates depend heavily on the Pareto tail.
+
+## View a Sample Usage Estimation Report ##
+
+This report was generated from real bandwidth data, collected from vnStat, with incidence and exceedance estimates created by the system.
+
+[Sample Usage Estimation Report (PDF)](/reports/bandwidth_usage.260831.pdf)
+
+<iframe
+  src="/reports/bandwidth_usage.260831.pdf"
+  width="100%"
+  height="750"
+  title="Sample Usage Estimation Report (PDF)"
+/>
+
+You can view and download the code on my GitHub.
+
+## Related Resources
+
+<div class="my-cta-buttons">
+  <a href="/writing/bandwidth_evaluation_deep_dive" class="btn-primary">
+    Read Deep Dive
+  </a>
+  <a
+    href="https://github.com/ari-t-foster/projects/bandwidth-usage-modeling-and-reporting"
+    class="btn-secondary"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    GitHub Repository
+  </a>
+</div>

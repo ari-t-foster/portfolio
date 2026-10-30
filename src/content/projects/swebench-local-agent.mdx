@@ -1,0 +1,109 @@
+---
+title: "Local LLM Agent Evaluation on SWE-bench"
+role: "AI Infrastructure and Backend Engineering"
+year: 2026
+duration: "Exploratory prototype"
+outcomeSummary: "Built an instrumented, locally hosted coding-agent prototype; ran exploratory batches covering 80 nominal model–issue combinations across five SWE-bench Verified tasks and confirmed one resolved issue."
+overview: "A constrained Python agent uses locally served language models to inspect real repositories, generate Git patches, and record why attempts succeed or fail. The prototype separates patch applicability from functional correctness assessed by SWE-bench."
+problem: "A generated code change is not evidence of a working repair. I wanted to measure whether small, locally hosted instruction models could find relevant code, produce applicable patches, and resolve real issues under a limited tool and inference budget."
+constraints:
+  - "Use locally hosted models rather than a remote inference API"
+  - "Restrict agent actions to literal search, source inspection, and one terminal patch submission"
+  - "Start from a clean checkout at each issue's recorded base commit"
+  - "Record model actions, tool output, timing, token usage, and failure classifications"
+  - "Check patch applicability separately from SWE-bench functional resolution"
+approach: "Implemented a standard-library Python agent using schema-constrained JSON actions against a local llama.cpp server. Bounded locate and inspect operations guide source navigation; a terminal patch action submits a unified diff for git apply --check validation. Ran exploratory SWE-bench Verified batches across five issues and five model artifacts, logged inference and tool events as JSONL, and manually evaluated applicable predictions with SWE-bench."
+keyDecisions:
+  - decision: "Use a restricted locate / inspect / patch action protocol"
+    reasoning: "A small, explicit tool surface made model behavior auditable and kept repository access read-only until a terminal diff submission."
+    alternatives:
+      - "Allow arbitrary shell commands or agent-driven test execution"
+      - "Use a larger general-purpose coding-agent framework"
+  - decision: "Separate patch applicability from functional correctness"
+    reasoning: "git apply --check identifies candidate diffs without modifying the checkout; SWE-bench is a separate test of whether a candidate actually repairs the issue."
+    alternatives:
+      - "Treat successfully generated or applicable diffs as resolved issues"
+  - decision: "Preserve per-request telemetry and failure categories"
+    reasoning: "Append-only JSONL audit trails exposed navigation loops, invalid patches, generation limits, and inference-server errors across iterative agent versions."
+    alternatives:
+      - "Keep only final patch outputs and evaluator pass/fail results"
+techStack:
+  - "Python (standard library)"
+  - "llama.cpp / OpenAI-compatible HTTP API"
+  - "Qwen2.5, Qwen3, and Devstral Small 2"
+  - "ripgrep"
+  - "Git unified diffs / git apply"
+  - "SWE-bench Verified"
+  - "JSON Schema / JSONL / SSE"
+impact:
+  metrics:
+    - label: "Model–issue attempts"
+      value: "80"
+    - label: "Applicable patches"
+      value: "10"
+    - label: "Confirmed SWE-bench resolutions"
+      value: "1"
+  qualitative: "The prototype demonstrated one verified repair and produced auditable evidence of navigation, patch-construction, inference, and infrastructure failure modes. The 80 attempts span evolving agent configurations and only five distinct issues; they are not an independent benchmark sample."
+learnings:
+  - "A patch that applies cleanly is not necessarily a functionally correct repair"
+  - "Restricted tool access makes agent decisions easier to audit but exposes inefficient navigation and patch-construction behavior"
+  - "Local model evaluation depends on operational constraints such as model residency, inference latency, and generation repetition"
+  - "Reproducible evaluations require preserving agent versions, model identities, predictions, and SWE-bench results together"
+featured: true
+order: 1
+---
+
+## What I built
+
+The system couples a lightweight, standard-library Python agent to a local `llama.cpp` server. For each SWE-bench Verified issue, the controller checks out the specified repository revision and presents the issue description and a bounded source-tree summary. The model then emits one schema-constrained JSON action per inference turn: `locate` (literal `ripgrep` search), `inspect` (read tracked Python source), or `patch` (submit a unified diff).
+
+The controller validates paths, bounds tool output, rejects repeated navigation requests, limits the number of turns, and checks submitted diffs with `git apply --check`. It never grants the model an arbitrary shell or test-execution tool. SSE streaming and append-only JSONL audit trails preserve inference timings, reported token usage, actions, errors, and validation outcomes.
+
+## Experimental setup
+
+The experiments used five SWE-bench Verified issues drawn from Matplotlib, scikit-learn, and SymPy. Five distinct model artifacts were tried across the exploratory runs: Qwen2.5 7B Q8_0, Qwen3 14B Q4_K_M and Q5_K_M, and two Devstral Small 2 24B IQ4_XS quantizations. Inference ran locally through a `llama.cpp` model router, configured for a 32,768-token context window. Later batches limited concurrent loaded models after resource-pressure failures.
+
+The agent evolved from a shorter navigation budget to 12-step and then 16-step variants. Each change is documented as a separate exploratory batch, not treated as a controlled model-comparison experiment. Successful `git apply --check` validation produced a candidate prediction; functional correctness was evaluated separately with SWE-bench.
+
+## Results
+
+| Measure | Observed result |
+|---|---:|
+| Nominal model–issue combinations across five batches | 80 |
+| Applicable patches produced | 10 |
+| SWE-bench-resolved patches | **1** |
+| Distinct benchmark issues exercised | 5 |
+
+**Confirmed resolution:** Qwen3-14B-Q4_K_M resolved `matplotlib__matplotlib-24026` in the October 22, 2026, 01:52 batch. The evaluator reported one resolved and one unresolved submitted issue in the corresponding split run, with no evaluation infrastructure errors. In the final 16-step batch, three applicable patches were evaluated; none resolved their issues.
+
+The main observed bottleneck was not repository access alone. Agents often found relevant implementations but consumed calls paging through narrow line ranges, repeated identical searches, or emitted malformed or inapplicable diffs. Some generations repeated patch fragments until the output-token limit. Early model-router concurrency also caused memory pressure and inference failures.
+
+## Engineering conclusions
+
+- **Patch applicability and correctness are separate gates.** The ability to emit a syntactically applicable diff did not generally translate into passing SWE-bench tests.
+- **Instrumented failures are useful results.** Structured audit logs made it possible to distinguish navigation exhaustion, duplicate requests, malformed patches, generation-length failures, and server errors.
+- **Local inference imposes operational costs.** Model residency, inference time, and repetitive generation materially affected experiment throughput.
+
+## Limitations and next steps
+
+This was a small, deliberately restricted prototype, not a production autonomous coding agent. SWE-bench evaluation and grouping of predictions from different models were manual. The final 16-step variant also contained a control-flow defect that omitted its intended last-step patch-only instruction; its results are reported as observed, not used to claim an isolated benefit from extra steps.
+
+Future work would prioritize total-duration and repetition watchdogs, more reliable diff construction, automated evaluator orchestration, and broader task coverage. These were intentionally left out of the publication scope.
+
+For implementation details, model provenance, and per-batch results, see the accompanying repository README and results summary.
+
+## Related Resources
+
+<div class="my-cta-buttons">
+  <a href="/writing/swebench-results-summary" class="btn-primary">
+    Read Deep Dive
+  </a>
+  <a
+    href="https://github.com/ari-t-foster/projects/swebench-local-agent"
+    class="btn-secondary"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    GitHub Repository
+  </a>
+</div>

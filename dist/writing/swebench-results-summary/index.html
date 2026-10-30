@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="en" data-theme="dark" data-astro-cid-37fxchfa> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="Astro v5.16.7"><!-- SEO tags injected via slot --><!-- Page Title --><title>Local SWE-bench Agent Experiment Results - Writing | Ari Foster</title><!-- Meta Description --><meta name="description" content="An audit of local-model runs, including one confirmed resolution and the failure modes across repeated attempts."><!-- Canonical URL --><link rel="canonical" href="https://example.com/writing/swebench-results-summary/"><!-- Author --><meta name="author" content="Ari Foster"><!-- Open Graph Tags --><meta property="og:type" content="article"><meta property="og:url" content="https://example.com/writing/swebench-results-summary/"><meta property="og:title" content="Local SWE-bench Agent Experiment Results - Writing"><meta property="og:description" content="An audit of local-model runs, including one confirmed resolution and the failure modes across repeated attempts."><meta property="og:image" content="https://example.com/og-image.png"><meta property="og:site_name" content="Professional Portfolio TITLE"><!-- Article-specific Open Graph tags --><meta property="article:published_time" content="2026-10-30T00:00:00.000Z"><!-- Twitter Card Tags --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://example.com/writing/swebench-results-summary/"><meta name="twitter:title" content="Local SWE-bench Agent Experiment Results - Writing"><meta name="twitter:description" content="An audit of local-model runs, including one confirmed resolution and the failure modes across repeated attempts."><meta name="twitter:image" content="https://example.com/og-image.png"><!-- Favicon --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#0a0a0a"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><!-- Prevent flash of wrong theme --><script>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script><!-- Preserve theme during View Transitions --><script>
+      document.addEventListener('astro:before-swap', (e) => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        e.newDocument.documentElement.setAttribute('data-theme', theme);
+      });
+    </script><script type="module">function t(){document.querySelectorAll("video").forEach(e=>{(e.error||e.networkState===HTMLMediaElement.NETWORK_NO_SOURCE)&&e.load()})}document.addEventListener("astro:page-load",t);</script><!-- Try manual fix for videos not playable --><script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.DMSsHbVg.js"></script><link rel="stylesheet" href="/_astro/BaseLayout.BLtbEqMo.css">
+<link rel="stylesheet" href="/_astro/demos.DCoVY29W.css">
+<link rel="stylesheet" href="/_astro/_slug_.7Hh-84VG.css">
+<style>.scroll-to-top[data-astro-cid-73562bqz]{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:var(--border-radius-sm);color:var(--color-text-secondary);cursor:pointer;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s ease,visibility .2s ease,transform .2s ease,background .2s ease,color .2s ease,border-color .2s ease;z-index:50}.scroll-to-top[data-astro-cid-73562bqz]:hover{background:var(--color-bg-elevated);color:var(--color-text);border-color:var(--color-text-muted)}.scroll-to-top[data-astro-cid-73562bqz]:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}.scroll-to-top[data-astro-cid-73562bqz].is-visible{opacity:1;visibility:visible;transform:translateY(0)}@media(max-width:640px){.scroll-to-top[data-astro-cid-73562bqz]{bottom:1.5rem;right:1.5rem;width:40px;height:40px}}.back-link-container[data-astro-cid-c4cqltiy]{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--color-border)}.back-link[data-astro-cid-c4cqltiy]{display:inline-flex;align-items:center;gap:.5rem;font-size:.9375rem;font-weight:500;color:var(--color-text-muted);text-decoration:none;transition:color .2s ease}.back-link[data-astro-cid-c4cqltiy]:hover{color:var(--color-text)}.back-icon[data-astro-cid-c4cqltiy]{width:16px;height:16px;transition:transform .2s ease}.back-link[data-astro-cid-c4cqltiy]:hover .back-icon[data-astro-cid-c4cqltiy]{transform:translate(-3px)}
+</style></head> <body data-astro-cid-37fxchfa> <header class="site-header" data-astro-cid-37fxchfa data-astro-transition-persist="astro-nvazhvd7-1"> <nav class="site-nav" aria-label="Main navigation" data-astro-cid-pux6a34n> <div class="nav-scroll" data-astro-cid-pux6a34n> <ul class="nav-list" data-astro-cid-pux6a34n> <li class="nav-item" data-astro-cid-pux6a34n> <a href="/" class="nav-link" data-astro-cid-pux6a34n> Home </a> </li><li class="nav-item" data-astro-cid-pux6a34n> <a href="/projects" class="nav-link" data-astro-cid-pux6a34n> Projects </a> </li><li class="nav-item" data-astro-cid-pux6a34n> <a href="/writing" class="nav-link nav-link--active" aria-current="page" data-astro-cid-pux6a34n> Writing </a> </li><li class="nav-item" data-astro-cid-pux6a34n> <a href="/contact" class="nav-link" data-astro-cid-pux6a34n> Contact </a> </li> </ul> </div> <div class="nav-end" data-astro-cid-pux6a34n> <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme" data-astro-cid-x3pjskd3> <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-x3pjskd3> <circle cx="12" cy="12" r="5" data-astro-cid-x3pjskd3></circle> <line x1="12" y1="1" x2="12" y2="3" data-astro-cid-x3pjskd3></line> <line x1="12" y1="21" x2="12" y2="23" data-astro-cid-x3pjskd3></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-x3pjskd3></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-x3pjskd3></line> <line x1="1" y1="12" x2="3" y2="12" data-astro-cid-x3pjskd3></line> <line x1="21" y1="12" x2="23" y2="12" data-astro-cid-x3pjskd3></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-x3pjskd3></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-x3pjskd3></line> </svg> <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-x3pjskd3> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-x3pjskd3></path> </svg> </button>  <script type="module">const o=()=>{const e=localStorage.getItem("theme");return e==="light"||e==="dark"?e:window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"},t=e=>{document.documentElement.setAttribute("data-theme",e),localStorage.setItem("theme",e)},c=()=>{const e=document.documentElement.getAttribute("data-theme");t(e==="dark"?"light":"dark")};document.addEventListener("click",e=>{e.target.closest(".theme-toggle")&&c()});window.matchMedia("(prefers-color-scheme: light)").addEventListener("change",e=>{localStorage.getItem("theme")||t(e.matches?"light":"dark")});t(o());</script> </div> </nav> <script type="module">function r(){const n=window.location.pathname;document.querySelectorAll(".nav-link").forEach(t=>{const a=t.getAttribute("href");let e=!1;a==="/"?e=n==="/":a&&(e=n.startsWith(a)),t.classList.toggle("nav-link--active",e),e?t.setAttribute("aria-current","page"):t.removeAttribute("aria-current")})}document.addEventListener("astro:page-load",r);</script>  </header> <main data-astro-cid-37fxchfa>   <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Local SWE-bench Agent Experiment Results",
+  "description": "An audit of local-model runs, including one confirmed resolution and the failure modes across repeated attempts.",
+  "author": {
+    "@type": "Person",
+    "name": "Ari Foster",
+    "url": "https://example.com"
+  },
+  "datePublished": "2026-10-30T00:00:00.000Z",
+  "dateModified": "2026-10-30T00:00:00.000Z",
+  "image": "https://example.com/og-image.png",
+  "publisher": {
+    "@type": "Person",
+    "name": "Ari Foster",
+    "url": "https://example.com"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://example.com/writing/swebench-results-summary/"
+  },
+  "keywords": "Experiment Results, Agent Evaluation, Failure Analysis",
+  "inLanguage": "en"
+}</script> <main class="article" data-astro-cid-jxnjfbl4> <!-- Article Header --> <header class="article-header" data-astro-cid-jxnjfbl4> <h1 data-astro-cid-jxnjfbl4>Local SWE-bench Agent Experiment Results</h1> <div class="article-meta" data-astro-cid-jxnjfbl4> <time class="publish-date" datetime="2026-10-30T00:00:00.000Z" data-astro-cid-jxnjfbl4> October 29, 2026 </time> <span class="meta-separator" data-astro-cid-jxnjfbl4>·</span> <span class="reading-time" data-astro-cid-jxnjfbl4>6 min read</span>  </div> <div class="article-tags" data-astro-cid-jxnjfbl4> <span class="tag" data-astro-cid-jxnjfbl4>Experiment Results</span><span class="tag" data-astro-cid-jxnjfbl4>Agent Evaluation</span><span class="tag" data-astro-cid-jxnjfbl4>Failure Analysis</span> </div> </header> <!-- Table of Contents (conditionally rendered if 3+ sections) --> <nav class="table-of-contents" aria-label="Table of contents" data-astro-cid-xvrfupwn><button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list" data-astro-cid-xvrfupwn><span class="toc-title" data-astro-cid-xvrfupwn>Table of Contents</span><span class="toc-count" data-astro-cid-xvrfupwn>8 sections</span><svg class="toc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-xvrfupwn><polyline points="6 9 12 15 18 9" data-astro-cid-xvrfupwn></polyline></svg></button><ul class="toc-list" id="toc-list" data-astro-cid-xvrfupwn><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#batch-inventory" class="toc-link" data-astro-cid-xvrfupwn>Batch inventory</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#confirmed-successful-evaluation" class="toc-link" data-astro-cid-xvrfupwn>Confirmed successful evaluation</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#final-batch-evaluation" class="toc-link" data-astro-cid-xvrfupwn>Final-batch evaluation</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#five-task-identifiers" class="toc-link" data-astro-cid-xvrfupwn>Five task identifiers</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#model-artifacts-and-families" class="toc-link" data-astro-cid-xvrfupwn>Model artifacts and families</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#audit-and-methodological-limitations" class="toc-link" data-astro-cid-xvrfupwn>Audit and methodological limitations</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#source-evidence-in-the-private-research-archive" class="toc-link" data-astro-cid-xvrfupwn>Source evidence in the private research archive</a></li><li class="toc-item toc-depth-2" data-astro-cid-xvrfupwn><a href="#related-resources" class="toc-link" data-astro-cid-xvrfupwn>Related Resources</a></li></ul></nav><script type="module">function c(){const t=document.querySelector(".toc-toggle"),n=document.querySelector(".toc-list");if(!t||!n)return;t.addEventListener("click",()=>{const e=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!e)),n.classList.toggle("is-open")}),document.querySelectorAll(".toc-link").forEach(e=>{e.addEventListener("click",i=>{i.preventDefault();const o=e.getAttribute("href");if(!o)return;const r=document.querySelector(o);if(!r)return;const s=document.querySelector(".site-header")?.offsetHeight||0,d=r.getBoundingClientRect().top+window.scrollY-s-20;window.scrollTo({top:d,behavior:"smooth"}),history.pushState(null,"",o)})})}c();document.addEventListener("astro:after-swap",c);</script> <!-- Article Content --> <article class="article-content" data-astro-cid-jxnjfbl4> <h1 id="local-swe-bench-agent--experiment-results">Local SWE-bench agent — experiment results</h1>
+<p><strong>Scope:</strong> exploratory local-model evaluations, October 20–22, 2026. Five SWE-bench Verified issues. The denominator below counts <em>nominal model–issue combinations</em>, not independent benchmark issues. For the October 20 pilot, the two-model × five-issue count comes from the user-maintained batch index; individual attempt-status records for that pilot are not bundled. The other 70 attempts have per-instance outcome summaries. Agent instructions, model sets, and reliability conditions changed between batches; do not pool these runs as a standardized leaderboard result.</p>
+<h2 id="batch-inventory">Batch inventory</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Batch start (local timestamp slug)</th><th style="text-align:right">Models × issues</th><th>Agent / run notes</th><th style="text-align:right">Applicable diffs</th><th style="text-align:right">Resolved</th><th>Other terminal outcomes</th></tr></thead><tbody><tr><td>20261020-203211</td><td style="text-align:right">2 × 5 = 10</td><td>pre-v2.2</td><td style="text-align:right">2</td><td style="text-align:right">0</td><td>Full attempt-level breakdown not included</td></tr><tr><td>20261022-015250</td><td style="text-align:right">5 × 5 = 25</td><td>pre-v2.2, some OOM issues</td><td style="text-align:right">3</td><td style="text-align:right"><strong>1</strong></td><td>11 navigation exhausted; 6 malformed; 2 inapplicable; 3 HTTP errors</td></tr><tr><td>20261022-051312</td><td style="text-align:right">3 × 5 = 15</td><td>v2.3 batch runner, v2.2 agent</td><td style="text-align:right">0</td><td style="text-align:right">Not evaluated</td><td>7 navigation exhausted; 5 malformed; 3 inapplicable</td></tr><tr><td>20261022-160043</td><td style="text-align:right">3 × 5 = 15</td><td>v2.3 batch runner, v2.3 agent, 12-step</td><td style="text-align:right">2</td><td style="text-align:right">0</td><td>6 malformed; 6 inapplicable; 1 generation-length</td></tr><tr><td>20261022-193725</td><td style="text-align:right">3 × 5 = 15</td><td>v2.4 batch runner, v2.4 agent</td><td style="text-align:right">3</td><td style="text-align:right">0</td><td>7 malformed; 4 inapplicable; 1 generation-length</td></tr><tr><td><strong>Total</strong></td><td style="text-align:right"><strong>80 nominal combinations</strong></td><td>Repeated measurements on five issues</td><td style="text-align:right"><strong>10</strong></td><td style="text-align:right"><strong>1</strong></td><td>Exploratory counts only</td></tr></tbody></table>
+<p><strong>Definition:</strong> “Applicable” means a nonempty generated patch passed <code>git apply --check</code> against the intended base checkout; “resolved” means the separate SWE-bench evaluator marked the submitted prediction resolved. An applicable patch is not a successful issue repair.</p>
+<h2 id="confirmed-successful-evaluation">Confirmed successful evaluation</h2>
+<ul>
+<li>Batch: <code>20261022-015250</code></li>
+<li>Prediction: <code>matplotlib__matplotlib-24026</code> / <code>Qwen3-14B-Q4_K_M</code></li>
+<li>Evaluator split: <code>20261022-015250-a</code></li>
+<li><code>results.json</code>: <code>submitted_instances=2</code>, <code>completed_instances=2</code>, <code>resolved_instances=1</code>, <code>unresolved_instances=1</code>, <code>infra_failure_instances=0</code>, <code>error_instances=0</code></li>
+<li><code>resolved_ids</code>: <code>[&quot;matplotlib__matplotlib-24026&quot;]</code></li>
+<li>Source file changed in the prediction: <code>lib/matplotlib/stackplot.py</code></li>
+<li>The other candidate in split <code>-a</code>, <code>sympy__sympy-19346</code> from Qwen3-14B-Q5_K_M, was unresolved. An additional Qwen2.5 candidate for the same Matplotlib issue was evaluated separately (split <code>-b</code>) and was unresolved.</li>
+</ul>
+<p><strong>Original-batch input collision:</strong> The unsplit <code>20261022-015250.predictions.jsonl</code> contained three prediction rows but only two unique <code>instance_id</code> values (two different models both predicted <code>matplotlib__matplotlib-24026</code>). Its initial evaluator log reported only two submitted instances and zero resolved. Splitting the same patches into <code>-a</code> and <code>-b</code> yielded the confirmed Qwen3 resolution. The exported patch bytes for Qwen3 were identical between the unsplit and split inputs (SHA-256 prefix <code>ea27cf0aac3954c6</code>). This strongly suggests duplicate-ID handling in the combined evaluator input obscured the winning candidate; the root log alone does not specify which duplicate was evaluated.</p>
+<h2 id="final-batch-evaluation">Final-batch evaluation</h2>
+<p>Batch <code>20261022-193725</code> produced three applicable diffs. They were split because two models predicted the same instance:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Evaluation</th><th>Model</th><th>Issue</th><th>SWE-bench outcome</th></tr></thead><tbody><tr><td><code>20261022-193725-a</code></td><td>Devstral Small 2 24B IQ4_XS 4.04bpw</td><td><code>matplotlib__matplotlib-24026</code></td><td>Unresolved</td></tr><tr><td><code>20261022-193725-a</code></td><td>Qwen3 14B Q4_K_M</td><td><code>sympy__sympy-11618</code></td><td>Unresolved</td></tr><tr><td><code>20261022-193725-b</code></td><td>Qwen2.5 7B Q5_0</td><td><code>matplotlib__matplotlib-24026</code></td><td>Unresolved</td></tr></tbody></table>
+<p>Both final split evaluators reported zero infrastructure failures and zero evaluation errors.</p>
+<h2 id="five-task-identifiers">Five task identifiers</h2>
+<ul>
+<li><code>matplotlib__matplotlib-24026</code></li>
+<li><code>scikit-learn__scikit-learn-14983</code></li>
+<li><code>scikit-learn__scikit-learn-26323</code></li>
+<li><code>sympy__sympy-11618</code></li>
+<li><code>sympy__sympy-19346</code></li>
+</ul>
+<h2 id="model-artifacts-and-families">Model artifacts and families</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Local model artifact / family</th><th>Note</th></tr></thead><tbody><tr><td>Qwen2.5 7B Instruct Q5_0</td><td>Model merged from parts, then locally renamed between batches, source parts were Q5_0 although renamed filename says Q8_0</td></tr><tr><td>Qwen3 14B Q4_K_M</td><td>Hugging Face GGUF, SHA-256 verified</td></tr><tr><td>Qwen3 14B Q5_K_M</td><td>Hugging Face GGUF, SHA-256 verified</td></tr><tr><td>Devstral Small 2 24B Instruct IQ4_XS</td><td>Hugging Face GGUF, SHA-256 verified, Unsloth quantization</td></tr><tr><td>Devstral Small 2 24B Instruct IQ4_XS 4.04bpw</td><td>Hugging Face GGUF, SHA-256 verified, byteshape/ShapeLearn quantization</td></tr></tbody></table>
+<p>These represent 5 artifact variants, correlated to 6 filenames, not independent model architectures. See the original Org source for complete filenames and model download URLs.</p>
+<h2 id="audit-and-methodological-limitations">Audit and methodological limitations</h2>
+<ol>
+<li><strong>Version provenance:</strong> The supplied analysis extracts show zeros for navigation/token counts in the early 20261022-015250 and 20261022-051312 batches because those early audit records did not expose later structured metrics. Those zero columns are not evidence that no navigation occurred.</li>
+<li><strong>Mixed interventions:</strong> The v2.3 and v2.4 variants differ in step budget and system instructions, preventing single-variable attribution.</li>
+<li><strong>v2.4 final-step defect:</strong> The archived <code>run_agent</code> uses <code>if step &gt;= 13: ... elif step == MAX_STEPS: ...</code> when <code>MAX_STEPS=16</code>. The <code>elif</code> is unreachable at step 16, so the intended final patch-only instruction was absent. The controller still rejected navigation on the last step. So, effectively, the model was being sent the warnings that it was almost out of attempts from step 13, but no final warning at step 16 (the last step) that this was the last attempt, and to submit a patch if there was one at that turn.</li>
+<li><strong>Manual evaluation:</strong> Candidate predictions were assembled into evaluator inputs manually; when multiple models targeted the same issue, evaluation was split into distinct runs. The initial unsplit 20261022-015250 input included a duplicate <code>instance_id</code>, showing why per-model grouping matters. The same candidate may appear in more than one exported evaluation input. Do not sum evaluator submission counts as unique patches.</li>
+<li><strong>Small sample:</strong> Five tasks, reused across configurations. The observed single resolution is a factual outcome, not a statistically reliable estimate of general coding-agent capability.</li>
+<li><strong>Partial evaluation artifacts:</strong> The archive contains machine-readable <code>results.json</code> for the confirmed win and final two split runs; other runs are corroborated by the supplied evaluator root logs and Org summary, not by bundled <code>results.json</code> files.</li>
+</ol>
+<h2 id="source-evidence-in-the-private-research-archive">Source evidence in the private research archive</h2>
+<ul>
+<li><code>SWEBench-batch-run-summaries-models-and-manual-commands.org</code> — experiment index, model provenance, manual evaluator and llama.cpp commands.</li>
+<li><code>swebench-batch-analysis/verified-5-*__20261022-*/1-final-summary-per-model-instance.log</code> — attempt status breakdown for four October 22 batches.</li>
+<li><code>swebench-batch-evaluations-single-known-resolved-patch/20261022-015250-a/logs/evaluation/20261022-015250-a/results.json</code> — machine-readable success confirmation.</li>
+<li><code>swebench-batch-evaluations-last-run/20261022-193725-{a,b}/logs/evaluation/*/results.json</code> — final evaluation outcomes.</li>
+<li><code>latest-scripts/swebench_minimal_agent_v2.4.py</code> and <code>latest-scripts/05-batch-minimal-agent-runner-v2.4.bash</code> — archived final implementation.</li>
+</ul>
+<h2 id="related-resources">Related Resources</h2>
+<div class="my-cta-buttons"><a href="/projects/swebench-local-agent" class="btn-primary"><p>Read Project Case Study</p></a><a href="https://github.com/ari-t-foster/projects/swebench-local-agent" class="btn-secondary" target="_blank" rel="noopener noreferrer"><p>GitHub Repository</p></a></div> </article> <div class="back-link-container" data-astro-cid-c4cqltiy> <a href="/writing" class="back-link" data-astro-cid-c4cqltiy> <svg class="back-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" data-astro-cid-c4cqltiy> <path d="M9.70711 17.2929C10.0976 17.6834 10.0976 18.3166 9.70711 18.7071C9.31658 19.0976 8.68342 19.0976 8.29289 18.7071L2.29289 12.7071C1.90237 12.3166 1.90237 11.6834 2.29289 11.2929L8.29289 5.29289C8.68342 4.90237 9.31658 4.90237 9.70711 5.29289C10.0976 5.68342 10.0976 6.31658 9.70711 6.70711L5.41421 11L21 11C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13L5.41422 13L9.70711 17.2929Z" data-astro-cid-c4cqltiy></path> </svg> All articles </a> </div>  </main> <button class="scroll-to-top" type="button" aria-label="Scroll to top" title="Scroll to top" data-astro-cid-73562bqz> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-73562bqz> <polyline points="18 15 12 9 6 15" data-astro-cid-73562bqz></polyline> </svg> </button>  <script type="module">function i(){const o=document.querySelector(".scroll-to-top");if(!o)return;const e=300;function t(){o&&(window.scrollY>e?o.classList.add("is-visible"):o.classList.remove("is-visible"))}function s(){window.scrollTo({top:0,behavior:"smooth"})}window.addEventListener("scroll",t,{passive:!0}),o.addEventListener("click",s),t()}i();document.addEventListener("astro:after-swap",i);</script>   </main> <footer class="site-footer" data-astro-cid-sz7xmlte> <div class="footer-container" data-astro-cid-sz7xmlte> <span class="copyright" data-astro-cid-sz7xmlte>© 2026 Ari Foster</span> <div class="footer-social" data-astro-cid-sz7xmlte>  <a href="https://github.com/ari-t-foster" target="_blank" rel="noopener noreferrer" data-astro-cid-sz7xmlte> Github </a> <span class="separator" data-astro-cid-sz7xmlte>·</span> <a href="https://linkedin.com/in/ari-t-foster" target="_blank" rel="noopener noreferrer" data-astro-cid-sz7xmlte> Linkedin </a>  </div> </div> </footer>  </body></html>
