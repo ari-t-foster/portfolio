@@ -12,17 +12,41 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: github-pages
+    env:
+      SITE_AUTHOR_NAME: ${{ vars.SITE_AUTHOR_NAME }}
+      SITE_AUTHOR_TITLE: ${{ vars.SITE_AUTHOR_TITLE }}
+      SITE_AUTHOR_EMAIL: ${{ vars.SITE_AUTHOR_EMAIL }}
+      SOCIAL_GITHUB: ${{ vars.SOCIAL_GITHUB }}
+      SOCIAL_LINKEDIN: ${{ vars.SOCIAL_LINKEDIN }}
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
+
       - run: npm ci
+
+      - name: Verify portfolio configuration
+        run: |
+          for key in SITE_AUTHOR_NAME SITE_AUTHOR_TITLE SITE_AUTHOR_EMAIL SOCIAL_GITHUB SOCIAL_LINKEDIN; do
+            if [ -n "${!key}" ]; then
+              echo "$key: SET"
+            else
+              echo "$key: MISSING"
+              if [ "$key" = "SITE_AUTHOR_NAME" ]; then
+                exit 1
+              fi
+            fi
+          done
+
       - run: npm run build
         env:
           SITE_URL: ${{ vars.SITE_URL }}
-          SITE_AUTHOR_NAME: ${{ vars.SITE_AUTHOR_NAME }}
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -36,3 +60,4 @@ jobs:
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
+

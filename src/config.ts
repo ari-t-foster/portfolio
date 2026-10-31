@@ -33,6 +33,16 @@ const getEnv = (key: string, fallback: string = ''): string => {
   return import.meta.env[key] ?? fallback;
 };
 
+/** 
+ * // candidate replacement function, above default does not fallback on empty str
+ * function getEnv(key: string, fallback: string): string {
+ *   const value = import.meta.env[key];
+ *   return typeof value === 'string' && value.trim()
+ *     ? value
+ *     : fallback;
+ * }
+ */
+
 /**
  * Site configuration object
  * 
