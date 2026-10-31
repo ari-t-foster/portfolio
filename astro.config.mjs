@@ -103,19 +103,19 @@ export default defineConfig({
       // Site configuration
       SITE_URL: envField.string({ context: 'client', access: 'public', default: 'https://example.com' }),
       SITE_LANGUAGE: envField.string({ context: 'client', access: 'public', default: 'en' }),
-      SITE_TITLE: envField.string({ context: 'client', access: 'public', default: 'Professional Portfolio' }),
-      SITE_DESCRIPTION: envField.string({ context: 'client', access: 'public', default: 'Engineering leader specializing in system architecture, technical decision-making, and delivering measurable business impact.' }),
+      SITE_TITLE: envField.string({ context: 'client', access: 'public', default: 'Ari Foster - Software Engineer' }),
+      SITE_DESCRIPTION: envField.string({ context: 'client', access: 'public', default: '' }),
       
       // Author information
-      SITE_AUTHOR_NAME: envField.string({ context: 'client', access: 'public', default: 'Your Name' }),
-      SITE_AUTHOR_TITLE: envField.string({ context: 'client', access: 'public', default: 'Senior Software Engineer' }),
-      SITE_AUTHOR_BIO: envField.string({ context: 'client', access: 'public', default: 'Engineering leader focused on solving complex technical challenges through thoughtful architecture and pragmatic trade-off analysis.' }),
-      SITE_AUTHOR_EMAIL: envField.string({ context: 'client', access: 'public', default: 'hello@example.com' }),
+      SITE_AUTHOR_NAME: envField.string({ context: 'client', access: 'public', default: 'Ari Foster' }),
+      SITE_AUTHOR_TITLE: envField.string({ context: 'client', access: 'public', default: 'Software Engineer' }),
+      SITE_AUTHOR_BIO: envField.string({ context: 'client', access: 'public', default: '' }),
+      SITE_AUTHOR_EMAIL: envField.string({ context: 'client', access: 'public', default: 'ari@scienceopera.net' }),
       SITE_AUTHOR_LOCATION: envField.string({ context: 'client', access: 'public', default: '' }),
       
       // Social media links (empty string = hidden)
-      SOCIAL_GITHUB: envField.string({ context: 'client', access: 'public', default: '' }),
-      SOCIAL_LINKEDIN: envField.string({ context: 'client', access: 'public', default: '' }),
+      SOCIAL_GITHUB: envField.string({ context: 'client', access: 'public', default: 'https://github.com/ari-t-foster' }),
+      SOCIAL_LINKEDIN: envField.string({ context: 'client', access: 'public', default: 'https://linkedin.com/in/ari-t-foster' }),
       SOCIAL_TWITTER: envField.string({ context: 'client', access: 'public', default: '' }),
       SOCIAL_MASTODON: envField.string({ context: 'client', access: 'public', default: '' }),
       SOCIAL_BLUESKY: envField.string({ context: 'client', access: 'public', default: '' }),
